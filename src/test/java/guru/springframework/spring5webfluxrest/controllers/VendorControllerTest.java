@@ -20,7 +20,7 @@ public class VendorControllerTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         vendorRepository = Mockito.mock(VendorRepository.class);
         vendorController = new VendorController(vendorRepository);
         webTestClient = WebTestClient.bindToController(vendorController).build();
