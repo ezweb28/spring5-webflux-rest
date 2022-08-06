@@ -3,6 +3,8 @@
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
 version: 2
+orbs:
+  gradle: circleci/gradle@4.6
 jobs:
   build:
     docker:
