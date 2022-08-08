@@ -85,4 +85,46 @@ public class VendorControllerTest {
                 .exchange()
                 .expectStatus().isOk();
     }
+
+    @Test
+    public void testPatchWithChanges() {
+        given(vendorRepository.findById(anyString()))
+                .willReturn(Mono.just(
+                        Vendor.builder().firstName("firstname").lastName("lastname").build()));
+        given(vendorRepository.save(any(Vendor.class)))
+                .willReturn(Mono.just(
+                        Vendor.builder().build()));
+
+        Mono<Vendor> vendorToSaveMono = Mono.just(
+                Vendor.builder().firstName("firstname 2").lastName("lastname 2").build());
+
+        webTestClient.patch()
+                .uri("/api/v1/vendors/someid")
+                .body(vendorToSaveMono, Vendor.class)
+                .exchange()
+                .expectStatus().isOk();
+
+        verify(vendorRepository).save(any());
+    }
+
+    @Test
+    public void testPatchWithNoChanges() {
+        given(vendorRepository.findById(anyString()))
+                .willReturn(Mono.just(
+                        Vendor.builder().firstName("firstname1").build()));
+        given(vendorRepository.save(any(Vendor.class)))
+                .willReturn(Mono.just(
+                        Vendor.builder().build()));
+
+        Mono<Vendor> vendorToSaveMono = Mono.just(
+                Vendor.builder().firstName("firstname1").build());
+
+        webTestClient.patch()
+                .uri("/api/v1/vendors/someid")
+                .body(vendorToSaveMono, Vendor.class)
+                .exchange()
+                .expectStatus().isOk();
+
+        verify(vendorRepository, never()).save(any());
+    }
 }
